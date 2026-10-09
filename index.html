@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ôn thi Đấu thầu</title>
+<meta name="description" content="Ngân hàng 390 câu hỏi ôn thi sát hạch chứng chỉ hành nghề hoạt động đấu thầu">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>">
+<style>
+:root{
+  --bg:#f6f7f9;--card:#fff;--text:#1d2330;--muted:#667085;--line:#e4e7ec;
+  --primary:#2563eb;--primary-weak:#e8efff;--ok:#16a34a;--ok-weak:#e7f6ec;
+  --bad:#dc2626;--bad-weak:#fdecec;--warn:#d97706;--warn-weak:#fff4e0;--radius:12px;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0f1218;--card:#181c24;--text:#e6e8ec;--muted:#98a2b3;--line:#2a303b;
+  --primary:#6b9bff;--primary-weak:#1c2740;--ok:#4ade80;--ok-weak:#14291c;
+  --bad:#f87171;--bad-weak:#311a1a;--warn:#fbbf24;--warn-weak:#30260f;
+}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);
+  font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+.wrap{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:.2em 0 .1em}
+h2{font-size:1.1rem;margin:0 0 .6em}
+.sub{color:var(--muted);margin:0 0 16px;font-size:.92rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lbl{font-weight:600;margin-bottom:8px;display:block}
+.hint{color:var(--muted);font-size:.85rem}
+button,.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--text);
+  padding:8px 14px;border-radius:9px;cursor:pointer}
+button:hover{border-color:var(--primary)}
+button.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+button.chip.on{background:var(--primary-weak);border-color:var(--primary);color:var(--primary);font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+input[type=number]{font:inherit;width:90px;padding:7px 10px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--text)}
+label.chk{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}
+label.chk input{margin-top:5px;width:17px;height:17px}
+.big{width:100%;padding:12px;font-size:1.05rem}
+/* exam */
+.top{position:sticky;top:0;z-index:5;background:var(--bg);padding:10px 0;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.timer{font-variant-numeric:tabular-nums;font-weight:700;padding:6px 12px;border-radius:9px;background:var(--card);border:1px solid var(--line)}
+.timer.low{color:var(--bad);border-color:var(--bad)}
+.bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;flex:1;min-width:120px}
+.bar>i{display:block;height:100%;background:var(--primary);width:0}
+.qmeta{display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:.85rem;margin-bottom:8px;flex-wrap:wrap}
+.qtext{font-size:1.06rem;font-weight:600;white-space:pre-line;margin-bottom:14px}
+.opt{display:flex;gap:12px;width:100%;text-align:left;padding:12px 14px;margin-bottom:10px;border-radius:10px;line-height:1.45}
+.opt .k{flex:0 0 28px;height:28px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:.9rem}
+.opt.sel{border-color:var(--primary);background:var(--primary-weak)}
+.opt.sel .k{background:var(--primary);color:#fff;border-color:var(--primary)}
+.opt.right{border-color:var(--ok);background:var(--ok-weak)}
+.opt.right .k{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-weak)}
+.opt.wrong .k{background:var(--bad);color:#fff;border-color:var(--bad)}
+.opt[disabled]{cursor:default;opacity:1}
+.explain{margin-top:6px;padding:10px 12px;border-radius:9px;background:var(--warn-weak);font-size:.92rem}
+.nav{display:flex;gap:8px;justify-content:space-between;margin-top:6px}
+.nav button{flex:1;padding:8px 6px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
+.grid button{padding:6px 0;font-size:.85rem;position:relative}
+.grid button.ans{background:var(--primary-weak);border-color:var(--primary)}
+.grid button.cur{outline:2px solid var(--primary);outline-offset:1px}
+.grid button.flag::after{content:"";position:absolute;top:3px;right:3px;width:7px;height:7px;border-radius:50%;background:var(--warn)}
+.grid button.r{background:var(--ok-weak);border-color:var(--ok)}
+.grid button.w{background:var(--bad-weak);border-color:var(--bad)}
+/* result */
+.score{font-size:2.6rem;font-weight:800;line-height:1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-top:14px}
+.stat{border:1px solid var(--line);border-radius:10px;padding:10px}
+.stat b{display:block;font-size:1.25rem}
+.rv{border-top:1px solid var(--line);padding:14px 0}
+.rv:first-child{border-top:0}
+.tag{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:20px;background:var(--line);color:var(--muted)}
+.tag.ok{background:var(--ok-weak);color:var(--ok)}.tag.bad{background:var(--bad-weak);color:var(--bad)}
+table.hist{width:100%;border-collapse:collapse;font-size:.9rem}
+table.hist td,table.hist th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal.show{display:flex}
+.modal .card{max-width:420px;width:100%}
+.hidden{display:none!important}
+@media (max-width:560px){.wrap{padding:12px}.opt{padding:10px 12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- SETUP -->
+<section id="setup">
+  <h1>Ôn thi sát hạch Đấu thầu</h1>
+  <p class="sub" id="bankInfo">Đang tải ngân hàng câu hỏi…</p>
+
+  <div class="card hidden" id="resumeCard">
+    <div class="row" style="justify-content:space-between">
+      <span>Bạn có một bài đang làm dở.</span>
+      <span class="row"><button id="discardBtn">Bỏ</button><button class="primary" id="resumeBtn">Làm tiếp</button></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="lbl">Số câu hỏi</span>
+    <div class="row" id="countChips">
+      <button class="chip" data-v="25">25</button>
+      <button class="chip on" data-v="50">50</button>
+      <button class="chip" data-v="100">100</button>
+      <button class="chip" data-v="all">Tất cả</button>
+      <input type="number" id="countInput" min="1" value="50" aria-label="Số câu tùy chọn">
+    </div>
+    <p class="hint" id="countHint"></p>
+  </div>
+
+  <div class="card">
+    <span class="lbl">Thời gian làm bài</span>
+    <div class="row" id="timeChips">
+      <button class="chip on" data-v="0">Không giới hạn</button>
+      <button class="chip" data-v="30">30 phút</button>
+      <button class="chip" data-v="45">45 phút</button>
+      <button class="chip" data-v="60">60 phút</button>
+      <input type="number" id="timeInput" min="0" value="0" aria-label="Số phút tùy chọn"> <span class="hint">phút</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <span class="lbl">Phạm vi câu hỏi</span>
+    <div id="partBoxes"></div>
+  </div>
+
+  <div class="card">
+    <span class="lbl">Cách chọn câu</span>
+    <div class="row" id="pickChips">
+      <button class="chip on" data-v="random">Ngẫu nhiên</button>
+      <button class="chip" data-v="unseen">Ưu tiên câu chưa làm</button>
+      <button class="chip" data-v="wrong">Chỉ câu từng làm sai</button>
+    </div>
+    <p class="hint" id="pickHint"></p>
+  </div>
+
+  <div class="card">
+    <span class="lbl">Chế độ</span>
+    <div class="row" id="modeChips">
+      <button class="chip on" data-v="exam">Thi thử — chấm khi nộp bài</button>
+      <button class="chip" data-v="practice">Luyện tập — xem đáp án ngay</button>
+    </div>
+  </div>
+
+  <button class="primary big" id="startBtn" disabled>Bắt đầu</button>
+
+  <div class="card" style="margin-top:14px" id="histCard">
+    <div class="row" style="justify-content:space-between;margin-bottom:6px">
+      <h2 style="margin:0">Lịch sử làm bài</h2>
+      <button id="resetBtn" class="hint" style="padding:4px 10px">Xóa dữ liệu</button>
+    </div>
+    <div id="hist"></div>
+  </div>
+</section>
+
+<!-- EXAM -->
+<section id="exam" class="hidden">
+  <div class="top">
+    <div class="bar"><i id="progBar"></i></div>
+    <span class="hint" id="progTxt"></span>
+    <span class="timer hidden" id="timer"></span>
+    <button class="primary" id="submitBtn">Nộp bài</button>
+  </div>
+  <div class="card">
+    <div class="qmeta"><span id="qNum"></span><span id="qPart"></span></div>
+    <div class="qtext" id="qText"></div>
+    <div id="opts"></div>
+    <div id="qExplain"></div>
+    <div class="nav">
+      <button id="prevBtn">← Câu trước</button>
+      <button id="flagBtn">⚑ Đánh dấu</button>
+      <button id="nextBtn">Câu sau →</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <span class="lbl" style="margin:0">Danh sách câu</span>
+      <span class="hint">Phím tắt: A–D hoặc 1–4 để chọn, ←/→ để chuyển câu</span>
+    </div>
+    <div class="grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section id="result" class="hidden">
+  <div class="card">
+    <div class="row" style="justify-content:space-between;align-items:flex-end">
+      <div>
+        <div class="hint">Kết quả</div>
+        <div class="score" id="rScore"></div>
+        <div class="hint" id="rSub"></div>
+      </div>
+      <div class="row">
+        <button id="retryWrongBtn">Làm lại câu sai</button>
+        <button class="primary" id="newBtn">Bài mới</button>
+      </div>
+    </div>
+    <div class="stats" id="rStats"></div>
+  </div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between;margin-bottom:6px">
+      <h2 style="margin:0">Xem lại</h2>
+      <div class="row" id="rvChips">
+        <button class="chip on" data-v="wrong">Sai &amp; bỏ trống</button>
+        <button class="chip" data-v="all">Tất cả</button>
+      </div>
+    </div>
+    <div id="review"></div>
+  </div>
+</section>
+
+</div>
+
+<div class="modal" id="modal">
+  <div class="card">
+    <p id="mTxt" style="margin-top:0"></p>
+    <div class="row" style="justify-content:flex-end">
+      <button id="mNo">Hủy</button><button class="primary" id="mYes">Đồng ý</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+const PARTS = {
+  luat: "Luật Đấu thầu 22/2023/QH15 (sửa đổi bởi Luật 57/2024, 90/2024)",
+  nd:   "Nghị định 95/2020, 09/2022 và 214/2025/NĐ-CP",
+  tt:   "Thông tư 79/2025 và 80/2025/TT-BTC",
+  vd:   "Vận dụng kiến thức nghiệp vụ thực tế"
+};
+const L = ["A","B","C","D","E"];
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// ---------- storage (safe) ----------
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const K_STATS = "qdt_stats", K_HIST = "qdt_hist", K_CUR = "qdt_current";
+
+let BANK = [], BYID = {};
+let cfg = { count: 50, minutes: 0, parts: new Set(Object.keys(PARTS)), pick: "random", mode: "exam" };
+let S = null; // current session
+let tick = null, lastResult = null;
+
+// ---------- helpers ----------
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function show(id){ ["setup","exam","result"].forEach(s => $(s).classList.toggle("hidden", s!==id)); window.scrollTo(0,0); }
+function chips(groupId, onPick){
+  $(groupId).querySelectorAll("button.chip").forEach(b => b.addEventListener("click", () => {
+    $(groupId).querySelectorAll("button.chip").forEach(x => x.classList.toggle("on", x===b));
+    onPick(b.dataset.v);
+  }));
+}
+function confirmBox(txt){
+  return new Promise(res => {
+    $("mTxt").textContent = txt; $("modal").classList.add("show");
+    const done = v => { $("modal").classList.remove("show"); $("mYes").onclick = $("mNo").onclick = null; res(v); };
+    $("mYes").onclick = () => done(true); $("mNo").onclick = () => done(false);
+  });
+}
+function fmtTime(s){ s=Math.max(0,Math.round(s)); const m=Math.floor(s/60), r=s%60; return (m<10?"0":"")+m+":"+(r<10?"0":"")+r; }
+function fmtDate(t){ const d=new Date(t); return d.toLocaleDateString("vi-VN")+" "+d.toLocaleTimeString("vi-VN",{hour:"2-digit",minute:"2-digit"}); }
+
+// ---------- setup ----------
+function pool(){
+  const stats = store.get(K_STATS, {});
+  let p = BANK.filter(q => cfg.parts.has(q.p));
+  if (cfg.pick === "wrong") p = p.filter(q => stats[q.id] && stats[q.id].lastWrong);
+  return p;
+}
+function refreshSetup(){
+  const p = pool(), stats = store.get(K_STATS, {});
+  const seen = BANK.filter(q => stats[q.id]).length;
+  const wrongNow = BANK.filter(q => stats[q.id] && stats[q.id].lastWrong).length;
+  $("bankInfo").textContent = `Ngân hàng ${BANK.length} câu · đã làm ${seen} câu · đang sai ${wrongNow} câu`;
+  const n = Math.min(cfg.count, p.length);
+  $("countHint").textContent = `Phạm vi đã chọn có ${p.length} câu → bài thi sẽ có ${n} câu.`;
+  $("pickHint").textContent = cfg.pick==="wrong" ? "Câu từng sai sẽ được loại khỏi danh sách này khi bạn làm đúng lại."
+    : cfg.pick==="unseen" ? "Câu chưa làm bao giờ được lấy trước, sau đó đến câu làm ít lần nhất." : "";
+  $("startBtn").disabled = n === 0;
+  $("startBtn").textContent = n ? `Bắt đầu (${n} câu${cfg.minutes?`, ${cfg.minutes} phút`:""})` : "Không có câu nào phù hợp";
+  renderHist();
+  const cur = store.get(K_CUR, null);
+  $("resumeCard").classList.toggle("hidden", !cur);
+}
+function buildParts(){
+  const cnt = {}; BANK.forEach(q => cnt[q.p]=(cnt[q.p]||0)+1);
+  $("partBoxes").innerHTML = Object.keys(PARTS).map(k =>
+    `<label class="chk"><input type="checkbox" value="${k}" checked><span>${esc(PARTS[k])} <span class="hint">(${cnt[k]||0} câu)</span></span></label>`).join("");
+  $("partBoxes").querySelectorAll("input").forEach(i => i.addEventListener("change", () => {
+    i.checked ? cfg.parts.add(i.value) : cfg.parts.delete(i.value); refreshSetup();
+  }));
+}
+function renderHist(){
+  const h = store.get(K_HIST, []);
+  if (!h.length){ $("hist").innerHTML = '<p class="hint" style="margin:0">Chưa có bài nào.</p>'; return; }
+  $("hist").innerHTML = `<table class="hist"><tr><th>Thời gian</th><th>Số câu</th><th>Đúng</th><th>Điểm</th><th>Làm trong</th></tr>` +
+    h.slice(0,15).map(r => `<tr><td>${fmtDate(r.t)}</td><td>${r.n}</td><td>${r.c}</td><td><b>${(r.c/r.n*100).toFixed(0)}%</b></td><td>${fmtTime(r.dur)}</td></tr>`).join("") + "</table>";
+}
+
+function start(ids){
+  let qs;
+  if (ids) qs = ids.slice();
+  else {
+    let p = pool();
+    if (cfg.pick === "unseen"){
+      const st = store.get(K_STATS, {});
+      p = shuffle(p).sort((a,b) => ((st[a.id]||{}).n||0) - ((st[b.id]||{}).n||0));
+      qs = p.slice(0, cfg.count).map(q => q.id);
+      shuffle(qs);
+    } else qs = shuffle(p).slice(0, cfg.count).map(q => q.id);
+  }
+  S = { qs, ans: {}, flags: {}, cur: 0, mode: cfg.mode, minutes: cfg.minutes,
+        startedAt: Date.now(), deadline: cfg.minutes ? Date.now()+cfg.minutes*60000 : 0 };
+  persist(); openExam();
+}
+function persist(){ if (S) store.set(K_CUR, S); }
+
+// ---------- exam ----------
+function openExam(){
+  show("exam"); buildGrid(); renderQ();
+  clearInterval(tick);
+  $("timer").classList.toggle("hidden", !S.deadline);
+  if (S.deadline){ tick = setInterval(updTimer, 500); updTimer(); }
+}
+function updTimer(){
+  const left = (S.deadline - Date.now())/1000;
+  $("timer").textContent = "⏱ " + fmtTime(left);
+  $("timer").classList.toggle("low", left < 300);
+  if (left <= 0){ clearInterval(tick); finish(true); }
+}
+function buildGrid(){
+  $("grid").innerHTML = S.qs.map((_,i) => `<button data-i="${i}">${i+1}</button>`).join("");
+  $("grid").querySelectorAll("button").forEach(b => b.onclick = () => { S.cur = +b.dataset.i; renderQ(); });
+}
+function updGrid(){
+  const bs = $("grid").children;
+  for (let i=0;i<bs.length;i++){
+    const id = S.qs[i], a = S.ans[id];
+    bs[i].className = "";
+    if (a !== undefined){
+      if (S.mode === "practice") bs[i].classList.add(a === BYID[id].a ? "r" : "w");
+      else bs[i].classList.add("ans");
+    }
+    if (S.flags[id]) bs[i].classList.add("flag");
+    if (i === S.cur) bs[i].classList.add("cur");
+  }
+  const done = Object.keys(S.ans).length;
+  $("progTxt").textContent = `${done}/${S.qs.length}`;
+  $("progBar").style.width = (done/S.qs.length*100) + "%";
+}
+function renderQ(){
+  const id = S.qs[S.cur], q = BYID[id], a = S.ans[id];
+  const reveal = S.mode === "practice" && a !== undefined;
+  $("qNum").textContent = `Câu ${S.cur+1} / ${S.qs.length}`;
+  $("qPart").textContent = PARTS[q.p];
+  $("qText").textContent = q.q;
+  $("opts").innerHTML = q.o.map((o,i) => {
+    let c = "opt";
+    if (reveal){ if (i===q.a) c+=" right"; else if (i===a) c+=" wrong"; }
+    else if (i===a) c+=" sel";
+    return `<button class="${c}" data-i="${i}" ${reveal?"disabled":""}><span class="k">${L[i]}</span><span>${esc(o)}</span></button>`;
+  }).join("");
+  $("opts").querySelectorAll(".opt").forEach(b => b.onclick = () => choose(+b.dataset.i));
+  $("qExplain").innerHTML = reveal
+    ? `<div class="explain"><b>${a===q.a?"✓ Đúng.":"✗ Sai."}</b> Đáp án: <b>${L[q.a]}</b>${q.e?` — Căn cứ: ${esc(q.e)}`:""}</div>` : "";
+  $("prevBtn").disabled = S.cur === 0;
+  $("nextBtn").textContent = S.cur === S.qs.length-1 ? "Nộp bài" : "Câu sau →";
+  $("flagBtn").textContent = S.flags[id] ? "⚑ Bỏ đánh dấu" : "⚑ Đánh dấu";
+  updGrid();
+}
+function choose(i){
+  const id = S.qs[S.cur];
+  if (S.mode === "practice" && S.ans[id] !== undefined) return;
+  S.ans[id] = i; persist(); renderQ();
+  if (S.mode === "exam" && S.cur < S.qs.length-1) setTimeout(() => { S.cur++; renderQ(); }, 180);
+}
+function go(d){
+  const n = S.cur + d;
+  if (n < 0) return;
+  if (n >= S.qs.length){ askSubmit(); return; }
+  S.cur = n; persist(); renderQ();
+}
+async function askSubmit(){
+  const left = S.qs.length - Object.keys(S.ans).length;
+  const ok = await confirmBox(left ? `Còn ${left} câu chưa trả lời. Nộp bài luôn?` : "Nộp bài và xem kết quả?");
+  if (ok) finish(false);
+}
+function finish(timeout){
+  clearInterval(tick);
+  const stats = store.get(K_STATS, {});
+  let c = 0; const byPart = {};
+  S.qs.forEach(id => {
+    const q = BYID[id], a = S.ans[id], right = a === q.a;
+    if (right) c++;
+    byPart[q.p] = byPart[q.p] || {n:0,c:0}; byPart[q.p].n++; if (right) byPart[q.p].c++;
+    if (a !== undefined){
+      const s = stats[id] || {n:0,w:0};
+      s.n++; if (!right) s.w++; s.lastWrong = !right; stats[id] = s;
+    }
+  });
+  store.set(K_STATS, stats);
+  const dur = (Date.now() - S.startedAt)/1000;
+  const h = store.get(K_HIST, []); h.unshift({ t: Date.now(), n: S.qs.length, c, dur }); store.set(K_HIST, h.slice(0,50));
+  store.del(K_CUR);
+  lastResult = { S, c, byPart, dur, timeout };
+  S = null;
+  renderResult("wrong");
+}
+
+// ---------- result ----------
+function renderResult(filter){
+  const { S:R, c, byPart, dur, timeout } = lastResult;
+  const n = R.qs.length, blank = R.qs.filter(id => R.ans[id] === undefined).length;
+  show("result");
+  $("rScore").textContent = `${c}/${n} · ${(c/n*100).toFixed(0)}%`;
+  $("rSub").textContent = (timeout ? "Hết giờ — bài đã tự nộp. " : "") + `Thời gian làm: ${fmtTime(dur)}`;
+  $("rStats").innerHTML =
+    `<div class="stat"><span class="hint">Đúng</span><b style="color:var(--ok)">${c}</b></div>` +
+    `<div class="stat"><span class="hint">Sai</span><b style="color:var(--bad)">${n-c-blank}</b></div>` +
+    `<div class="stat"><span class="hint">Bỏ trống</span><b>${blank}</b></div>` +
+    Object.keys(byPart).map(p => `<div class="stat"><span class="hint">${esc(PARTS[p].split(" (")[0])}</span><b>${byPart[p].c}/${byPart[p].n}</b></div>`).join("");
+  $("retryWrongBtn").disabled = c === n;
+  const list = R.qs.map((id,i) => ({id,i})).filter(x => filter==="all" || R.ans[x.id] !== BYID[x.id].a);
+  $("review").innerHTML = list.length ? list.map(({id,i}) => {
+    const q = BYID[id], a = R.ans[id], ok = a === q.a;
+    return `<div class="rv"><div class="qmeta"><span>Câu ${i+1}</span>
+      <span class="tag ${ok?"ok":"bad"}">${ok?"Đúng":a===undefined?"Bỏ trống":"Sai"}</span></div>
+      <div class="qtext">${esc(q.q)}</div>` +
+      q.o.map((o,k) => `<div class="opt ${k===q.a?"right":k===a?"wrong":""}"><span class="k">${L[k]}</span><span>${esc(o)}</span></div>`).join("") +
+      (q.e ? `<div class="explain">Căn cứ: ${esc(q.e)}</div>` : "") + `</div>`;
+  }).join("") : '<p class="hint">Không có câu sai nào. 🎉</p>';
+}
+
+// ---------- events ----------
+chips("countChips", v => { cfg.count = v==="all" ? 9999 : +v; $("countInput").value = v==="all" ? pool().length : v; refreshSetup(); });
+$("countInput").addEventListener("input", e => {
+  const v = parseInt(e.target.value,10); if (v>0){ cfg.count = v; $("countChips").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x.dataset.v==String(v))); refreshSetup(); }
+});
+chips("timeChips", v => { cfg.minutes = +v; $("timeInput").value = v; refreshSetup(); });
+$("timeInput").addEventListener("input", e => {
+  const v = Math.max(0, parseInt(e.target.value,10)||0); cfg.minutes = v;
+  $("timeChips").querySelectorAll(".chip").forEach(x=>x.classList.toggle("on", x.dataset.v==String(v))); refreshSetup();
+});
+chips("pickChips", v => { cfg.pick = v; refreshSetup(); });
+chips("modeChips", v => { cfg.mode = v; });
+chips("rvChips", v => renderResult(v));
+$("startBtn").onclick = () => start();
+$("prevBtn").onclick = () => go(-1);
+$("nextBtn").onclick = () => go(1);
+$("flagBtn").onclick = () => { const id = S.qs[S.cur]; S.flags[id] = !S.flags[id]; persist(); renderQ(); };
+$("submitBtn").onclick = askSubmit;
+$("newBtn").onclick = () => { show("setup"); refreshSetup(); };
+$("retryWrongBtn").onclick = () => {
+  const R = lastResult.S; cfg.mode = R.mode;
+  start(shuffle(R.qs.filter(id => R.ans[id] !== BYID[id].a)));
+};
+$("resumeBtn").onclick = () => { S = store.get(K_CUR, null); if (S) openExam(); };
+$("discardBtn").onclick = () => { store.del(K_CUR); refreshSetup(); };
+$("resetBtn").onclick = async () => {
+  if (await confirmBox("Xóa toàn bộ lịch sử và thống kê câu đúng/sai trên trình duyệt này?")){
+    [K_STATS,K_HIST,K_CUR].forEach(store.del); refreshSetup();
+  }
+};
+document.addEventListener("keydown", e => {
+  if ($("exam").classList.contains("hidden") || $("modal").classList.contains("show")) return;
+  if (e.target.tagName === "INPUT") return;
+  const k = e.key.toUpperCase();
+  const idx = "ABCDE".indexOf(k) >= 0 ? "ABCDE".indexOf(k) : "12345".indexOf(e.key);
+  if (idx >= 0 && idx < BYID[S.qs[S.cur]].o.length){ choose(idx); e.preventDefault(); }
+  else if (e.key === "ArrowRight") go(1);
+  else if (e.key === "ArrowLeft") go(-1);
+});
+
+// ---------- load ----------
+fetch("questions.json").then(r => r.json()).then(data => {
+  BANK = data; BANK.forEach(q => BYID[q.id] = q);
+  buildParts(); refreshSetup();
+}).catch(() => { $("bankInfo").textContent = "Không tải được questions.json."; });
+})();
+</script>
+</body>
+</html>
